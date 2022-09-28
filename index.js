@@ -71,9 +71,9 @@ app.delete('/users/:id', (req, res) => {
     const id = req.params['id'];
     //if a user with that ID is not found
     if (!deleteUserById(id)){
-        res.status(404).send("Resource not found")
+        res.status(404).end("Resource not found")
     }
-    res.status(200).send();
+    res.status(204).end();
 });
 
 app.post('/users', (req, res) => {
@@ -89,6 +89,7 @@ function addUser(user){
 
 function deleteUserById(id){
     const result = users.users_list.filter(user => user.id != id);
+    console.log({id, result, users_list: users.users_list})
     if (result.length !== users.users_list.length){
         users.users_list = result;
         return true
