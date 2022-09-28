@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 const port = 5000;
+const SUPPORTED_QUERIES = ["name", "job"]
 
 const users = { 
     users_list :
@@ -41,15 +42,17 @@ app.get('/', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
-    const name = req.query.name;
-    if (name){
-        let result = findUserByName(name);
-        result = {users_list: result};
-        res.send(result);
+    let result = users;
+
+    for (const queryName of SUPPORTED_QUERIES){
+        const value = req.query[queryName]
+        if (value){
+            result = findByParam(result, queryName, value)
+            result = { users_list: result }
+        }
     }
-    else {
-        res.send(users);
-    }
+
+    res.send(result);
 });
 
 app.get('/users/:id', (req, res) => {
@@ -63,6 +66,12 @@ app.get('/users/:id', (req, res) => {
     }
 });
 
+app.delete('/users/:id', (req, res) => {
+    const id = req.params['id'];
+    deleteUserById(id)
+    res.status(200).end();
+});
+
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
     addUser(userToAdd);
@@ -73,13 +82,17 @@ function addUser(user){
     users['users_list'].push(user);
 }
 
+function deleteUserById(id){
+    users.users_list = users.users_list.filter(user => user.id != id);
+}
+
 
 function findUserById(id) {
     return users['users_list'].find( (user) => user['id'] === id);
 }
 
-const findUserByName = (name) => { 
-    return users['users_list'].filter( (user) => user['name'] === name); 
+const findByParam = (data, attribute, value) => { 
+    return data.users_list.filter( user => user[attribute] === value)
 }
 
 app.listen(port, () => {
