@@ -59,7 +59,7 @@ app.get('/users/:id', (req, res) => {
     const id = req.params['id']; //or req.params.id
     let result = findUserById(id);
     if (result === undefined || result.length == 0)
-        res.status(404).send('Resource not found.');
+        res.status(404).end('Resource not found.');
     else {
         result = {users_list: result};
         res.send(result);
@@ -78,7 +78,7 @@ app.delete('/users/:id', (req, res) => {
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
     addUser(userToAdd);
-    res.status(200).end();
+    res.status(201).end();
 });
 
 function addUser(user){
