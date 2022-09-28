@@ -89,7 +89,6 @@ function addUser(user){
 
 function deleteUserById(id){
     const result = users.users_list.filter(user => user.id != id);
-    console.log({id, result, users_list: users.users_list})
     if (result.length !== users.users_list.length){
         users.users_list = result;
         return true
