@@ -1,4 +1,5 @@
 // @ts-nocheck
+const { v4: uuid } = require('uuid');
 const express = require('express');
 const app = express();
 const port = 5000;
@@ -76,9 +77,10 @@ app.delete('/users/:id', (req, res) => {
 });
 
 app.post('/users', (req, res) => {
-    const userToAdd = req.body;
+    let userToAdd = req.body;
+    userToAdd["id"] = uuid().substring(0, 6)
     addUser(userToAdd);
-    res.status(201).end();
+    res.status(201).send(userToAdd);
 });
 
 function addUser(user){
