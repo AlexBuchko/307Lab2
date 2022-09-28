@@ -2,7 +2,7 @@
 const express = require('express');
 const app = express();
 const port = 5000;
-const SUPPORTED_QUERIES = ["name", "job"]
+
 
 const users = { 
     users_list :
@@ -44,12 +44,9 @@ app.get('/', (req, res) => {
 app.get('/users', (req, res) => {
     let result = users;
 
-    for (const queryName of SUPPORTED_QUERIES){
-        const value = req.query[queryName]
-        if (value){
-            result = findByParam(result, queryName, value)
-            result = { users_list: result }
-        }
+    for (const [key, val] of Object.entries(req.query)){
+        result = findByParam(result, key, val)
+        result = { users_list: result }
     }
 
     res.send(result);
@@ -85,7 +82,6 @@ function addUser(user){
 function deleteUserById(id){
     users.users_list = users.users_list.filter(user => user.id != id);
 }
-
 
 function findUserById(id) {
     return users['users_list'].find( (user) => user['id'] === id);
