@@ -65,8 +65,11 @@ app.get('/users/:id', (req, res) => {
 
 app.delete('/users/:id', (req, res) => {
     const id = req.params['id'];
-    deleteUserById(id)
-    res.status(200).end();
+    //if a user with that ID is not found
+    if (!deleteUserById(id)){
+        res.status(404).send("Resource not found")
+    }
+    res.status(200).send();
 });
 
 app.post('/users', (req, res) => {
@@ -80,7 +83,12 @@ function addUser(user){
 }
 
 function deleteUserById(id){
-    users.users_list = users.users_list.filter(user => user.id != id);
+    const result = users.users_list.filter(user => user.id != id);
+    if (result.length !== users.users_list.length){
+        users.users_list = result;
+        return true
+    }
+    return false;
 }
 
 function findUserById(id) {
